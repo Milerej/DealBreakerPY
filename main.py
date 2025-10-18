@@ -1,227 +1,10 @@
-import streamlit as st
-import pandas as pd
-from datetime import datetime
-
-# Page configuration
-st.set_page_config(
-    page_title="Gartner Contract Evaluation Platform",
-    page_icon="📊",
-    layout="wide"
-)
-
-# Custom CSS styling
-st.markdown("""
-<style>
-    .main-header {
-        background: linear-gradient(90deg, #1e40af, #3b82f6);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .metric-card {
-        background: linear-gradient(135deg, #1e40af, #3b82f6);
-        color: white;
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-        margin: 10px 0;
-    }
-    
-    .metric-card-danger {
-        background: linear-gradient(135deg, #dc2626, #ef4444);
-        color: white;
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
-        margin: 10px 0;
-    }
-    
-    .alert-success {
-        background-color: #f0f9ff;
-        border-left: 4px solid #059669;
-        color: #059669;
-        padding: 15px;
-        border-radius: 6px;
-        margin: 10px 0;
-    }
-    
-    .alert-warning {
-        background-color: #fffbeb;
-        border-left: 4px solid #d97706;
-        color: #d97706;
-        padding: 15px;
-        border-radius: 6px;
-        margin: 10px 0;
-    }
-    
-    .alert-danger {
-        background-color: #fef2f2;
-        border-left: 4px solid #dc2626;
-        color: #dc2626;
-        padding: 15px;
-        border-radius: 6px;
-        margin: 10px 0;
-    }
-    
-    .alert-info {
-        background-color: #eff6ff;
-        border-left: 4px solid #3b82f6;
-        color: #1e40af;
-        padding: 15px;
-        border-radius: 6px;
-        margin: 10px 0;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Initialize session state
-if 'chat_history' not in st.session_state:
-    st.session_state.chat_history = []
-
-# Header
-st.markdown("""
-<div class="main-header">
-    <h1>📊 Gartner Contract Evaluation Platform</h1>
-    <p>Intelligent analytics for procurement decision-making</p>
-</div>
-""", unsafe_allow_html=True)
-
-# Sample data function (embedded for now)
-@st.cache_data
-def get_sample_data():
-    """Get sample user data"""
-    return pd.DataFrame({
-        'User': ['Ace Tan (CISO)', 'Dom Chan', 'YZ Feng (CDAO)', 'Chan Vivi', 'Wang JH', 
-                'Sally', 'GPD Ng', 'P En', 'Andrew Ng', 'Frank Liew'],
-        'Documents': [1749, 559, 300, 261, 209, 174, 72, 156, 43, 36],
-        'Calls': [47, 31, 22, 0, 13, 7, 36, 8, 0, 0],
-        'Conferences': [14, 1, 7, 1, 0, 1, 2, 3, 0, 0],
-        'Total_Activity': [1810, 591, 329, 262, 222, 182, 110, 167, 43, 36],
-        'Department': ['CISO Office', 'IT Leadership', 'IT Leadership', 'Strategy', 'SNDGO', 
-                      'Strategy', 'IT', 'SNDGO', 'GTP', 'GTP']
-    })
-
-# Basic Overview Dashboard Function
-def render_overview():
-    st.header("📊 Overview Dashboard")
-    
-    # Key Metrics Row
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.markdown("""
-        <div class="metric-card">
-            <h2>38</h2>
-            <p>Licensed Users</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div class="metric-card">
-            <h2>68%</h2>
-            <p>Active Users (26 of 38)</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown("""
-        <div class="metric-card-danger">
-            <h2>$632</h2>
-            <p>Cost per Download</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col4:
-        st.markdown("""
-        <div class="metric-card">
-            <h2>4.1</h2>
-            <p>User Satisfaction (5.0 scale)</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    
-    # Usage Analysis Section
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("📈 Usage Analysis (Aug 2023 - Mar 2025)")
-        
-        st.markdown("""
-        **Total Activity:** 6,524 interactions  
-        **Document Downloads:** 6,170 reports  
-        **Analyst Calls:** 306 consultations  
-        **Conference Sessions:** 48 attendances  
-        
-        **Peak Months:** March (Budget Planning), September (Strategy Reviews)  
-        **Activity Distribution:** 94.6% docs, 4.7% calls, 0.7% conferences
-        """)
-    
-    with col2:
-        st.subheader("👥 Top User Analysis")
-        
-        # Load and display user data
-        user_data = get_sample_data()
-        st.dataframe(
-            user_data[['User', 'Documents', 'Calls', 'Conferences', 'Total_Activity']],
-            use_container_width=True,
-            hide_index=True
-        )
-        
-        st.caption("Top 5 users account for 54% of total activity")
-    
-    # Budget Crisis Alert
-    st.markdown("""
-    <div class="alert-danger">
-        <strong>⚠️ Budget Variance Alert:</strong> Actual spending $3.9M vs $3.5M contracted (11% over budget)<br>
-        <strong>🚨 BUDGET EMERGENCY:</strong> $3.9M spent in 20 months vs $1.95M expected (100% over pace)<br>
-        <strong>Projected Final Cost:</strong> $7.02M vs $3.5M contracted without intervention
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Service Plan Analysis
-    st.subheader("📊 Service Plan Utilization Analysis")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("#### Gartner for CISOs")
-        st.write("**Users:** 1 (Ace Tan)")
-        st.write("**Total Activity:** 1,810 interactions")
-        st.write("**Per-User Avg:** 1,810/user")
-        st.progress(1.0)
-        st.success("✅ Exceptional Value")
-        st.caption("Single power user with extreme high usage (91 interactions/month)")
-    
-    with col2:
-        st.markdown("#### Executive Programs")
-        st.write("**Users:** 6 (Leadership Team)")
-        st.write("**Total Activity:** 1,459 interactions")
-        st.write("**Per-User Avg:** 243/user")
-        st.progress(0.65)
-        st.warning("⚠️ Mixed Performance")
-        st.caption("High variance - Dom Chan (591) vs others (~50-300)")
-    
-    with col3:
-        st.markdown("#### Technical Professionals (GTP)")
-        st.write("**Users:** 24 (SMB EA team)")
-        st.write("**Total Activity:** 1,847 interactions")
-        st.write("**Per-User Avg:** 77/user")
-        st.progress(0.2)
-        st.error("🚨 Needs Restructuring")
-        st.caption("Low per-user utilization suggests over-provisioning")
-
-# Basic Insights Function
+# Basic Insights Function with Charts in Chatbox
 def render_insights():
     st.header("💡 Insights Engine")
     
     st.markdown("""
     <div class="alert-info">
-        <strong>Management Summary:</strong> Key insights to guide procurement decisions and budget optimization
+        <strong>Management Summary:</strong> Key insights to guide procurement decisions and budget optimisation
     </div>
     """, unsafe_allow_html=True)
     
@@ -266,178 +49,189 @@ def render_insights():
         - **User limits:** Cap high-usage outliers (Ace Tan: 28% of usage)
         - **Budget review:** Need $7M+ total funding or service cuts
         """)
-
-# Basic AI Bot Function
-def render_ai_bot():
-    st.header("🤖 AI Discovery Bot")
+    
+    st.markdown("---")
+    
+    # Interactive Insights Chatbox
+    st.subheader("🤖 Interactive Insights Explorer")
     
     col1, col2 = st.columns([1, 2])
     
     with col1:
-        st.subheader("Quick Questions")
+        st.markdown("#### Quick Analysis")
         
-        if st.button("Show me departments with highest ROI", key="roi_btn"):
-            st.session_state.last_response = "The departments with highest ROI are: 1) CISO Office (exceptional usage), 2) IT Leadership (high engagement), 3) Strategy Team (consistent usage). CISO Office shows exceptional value due to Ace Tan's intensive usage pattern."
+        if st.button("📊 Show ROI by Department", key="roi_chart_btn"):
+            st.session_state.chart_type = "roi_department"
         
-        if st.button("What alternatives do users prefer?", key="alt_btn"):
-            st.session_state.last_response = "Survey data shows 34% prefer alternatives: Forrester (18%), IDC (12%), McKinsey (4%). Main reasons: cost concerns (67%), content overlap (23%), user interface preferences (32%)."
+        if st.button("📈 Usage Trends Over Time", key="usage_trend_btn"):
+            st.session_state.chart_type = "usage_trends"
         
-        if st.button("Analyse cost trends over time", key="cost_btn"):
-            st.session_state.last_response = "Cost trends show 100% increase over expected pace. Usage peaks during Q1 budget cycles and Q3 strategic planning periods. Current trajectory unsustainable without intervention."
+        if st.button("💰 Cost Analysis Breakdown", key="cost_analysis_btn"):
+            st.session_state.chart_type = "cost_breakdown"
         
-        if st.button("Which content types drive most value?", key="content_btn"):
-            st.session_state.last_response = "Document downloads drive 94.6% of activity, analyst calls 4.7%, conferences 0.7%. High-value users prefer direct research access over events. Cost per interaction varies dramatically by service type."
+        if st.button("👥 User Activity Distribution", key="user_activity_btn"):
+            st.session_state.chart_type = "user_distribution"
+        
+        if st.button("⚖️ Budget vs Actual Spending", key="budget_actual_btn"):
+            st.session_state.chart_type = "budget_comparison"
+        
+        if st.button("🎯 Service Utilisation Rates", key="service_util_btn"):
+            st.session_state.chart_type = "service_utilisation"
     
     with col2:
-        st.subheader("AI Chat Interface")
+        st.markdown("#### Visual Insights")
         
-        # Chat input
-        user_input = st.text_input("Ask me about your Gartner data...", key="chat_input")
+        # Display charts based on button clicks
+        if hasattr(st.session_state, 'chart_type'):
+            
+            if st.session_state.chart_type == "roi_department":
+                st.markdown("**📊 ROI Analysis by Department**")
+                
+                # Create ROI data
+                roi_data = pd.DataFrame({
+                    'Department': ['CISO Office', 'IT Leadership', 'Strategy', 'SNDGO', 'GTP'],
+                    'Cost_per_User': [195000, 48750, 65000, 40000, 12917],
+                    'Activity_per_User': [1810, 243, 174, 111, 77],
+                    'ROI_Score': [9.3, 5.0, 2.7, 2.8, 0.6]
+                })
+                
+                fig = px.bar(roi_data, x='Department', y='ROI_Score', 
+                           title='ROI Score by Department',
+                           color='ROI_Score',
+                           color_continuous_scale='RdYlGn')
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                st.info("**Insight:** CISO Office delivers exceptional ROI (9.3x) due to Ace Tan's intensive usage. GTP shows poor ROI (0.6x) suggesting over-provisioning.")
+            
+            elif st.session_state.chart_type == "usage_trends":
+                st.markdown("**📈 Usage Trends Analysis**")
+                
+                # Create monthly usage data
+                months = pd.date_range('2023-08', '2025-03', freq='M')
+                usage_data = pd.DataFrame({
+                    'Month': months,
+                    'Documents': [280, 320, 450, 380, 290, 340, 410, 380, 320, 290, 350, 420, 380, 340, 290, 320, 380, 340, 290, 320],
+                    'Analyst_Calls': [12, 15, 22, 18, 14, 16, 20, 18, 15, 14, 17, 21, 18, 16, 14, 15, 18, 16, 14, 15],
+                    'Conferences': [2, 1, 4, 3, 1, 2, 3, 2, 1, 2, 3, 4, 2, 1, 2, 1, 3, 2, 1, 2]
+                })
+                
+                fig = px.line(usage_data, x='Month', y=['Documents', 'Analyst_Calls', 'Conferences'],
+                            title='Usage Trends Over Time')
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                st.info("**Insight:** Document downloads show seasonal peaks during budget cycles (March) and strategy reviews (September). Analyst calls remain steady but low.")
+            
+            elif st.session_state.chart_type == "cost_breakdown":
+                st.markdown("**💰 Cost Analysis Breakdown**")
+                
+                # Create cost breakdown data
+                cost_data = pd.DataFrame({
+                    'Service_Type': ['Gartner for CISOs', 'Executive Programmes', 'Technical Professionals', 'Conferences & Events'],
+                    'Actual_Cost': [1950000, 1460000, 310000, 180000],
+                    'Expected_Cost': [975000, 730000, 155000, 90000],
+                    'Variance': [975000, 730000, 155000, 90000]
+                })
+                
+                fig = go.Figure()
+                fig.add_trace(go.Bar(name='Expected Cost', x=cost_data['Service_Type'], y=cost_data['Expected_Cost']))
+                fig.add_trace(go.Bar(name='Actual Cost', x=cost_data['Service_Type'], y=cost_data['Actual_Cost']))
+                fig.update_layout(title='Budget vs Actual Cost by Service Type', height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                st.error("**Critical:** All service types are 100% over budget. CISO service alone accounts for 50% of total overspend.")
+            
+            elif st.session_state.chart_type == "user_distribution":
+                st.markdown("**👥 User Activity Distribution**")
+                
+                user_data = get_sample_data()
+                
+                fig = px.scatter(user_data, x='Documents', y='Calls', 
+                               size='Total_Activity', color='Department',
+                               hover_name='User',
+                               title='User Activity Distribution (Bubble size = Total Activity)')
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                st.warning("**Insight:** Extreme concentration - Ace Tan is a clear outlier with 1,749 documents vs next highest at 559. Suggests potential account sharing.")
+            
+            elif st.session_state.chart_type == "budget_comparison":
+                st.markdown("**⚖️ Budget vs Actual Spending Timeline**")
+                
+                # Create cumulative spending data
+                timeline_data = pd.DataFrame({
+                    'Month': pd.date_range('2023-08', '2025-03', freq='M'),
+                    'Budgeted_Cumulative': [97500, 195000, 292500, 390000, 487500, 585000, 682500, 780000, 877500, 975000, 1072500, 1170000, 1267500, 1365000, 1462500, 1560000, 1657500, 1755000, 1852500, 1950000],
+                    'Actual_Cumulative': [180000, 380000, 590000, 780000, 950000, 1150000, 1380000, 1580000, 1780000, 1980000, 2200000, 2450000, 2680000, 2920000, 3150000, 3380000, 3620000, 3850000, 3900000, 3900000]
+                })
+                
+                fig = px.line(timeline_data, x='Month', y=['Budgeted_Cumulative', 'Actual_Cumulative'],
+                            title='Cumulative Spending: Budget vs Actual')
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                st.error("**Emergency:** Spending diverged from budget immediately and continues accelerating. Current trajectory leads to $7M+ total cost.")
+            
+            elif st.session_state.chart_type == "service_utilisation":
+                st.markdown("**🎯 Service Utilisation Rates**")
+                
+                # Create utilisation data
+                util_data = pd.DataFrame({
+                    'Service': ['Documents', 'Analyst Calls', 'Conferences', 'Magic Quadrants', 'Hype Cycles'],
+                    'Available': [10000, 500, 100, 200, 150],
+                    'Used': [6170, 306, 48, 180, 95],
+                    'Utilisation_Rate': [61.7, 61.2, 48.0, 90.0, 63.3]
+                })
+                
+                fig = px.bar(util_data, x='Service', y='Utilisation_Rate',
+                           title='Service Utilisation Rates (%)',
+                           color='Utilisation_Rate',
+                           color_continuous_scale='RdYlGn')
+                fig.update_layout(height=400)
+                st.plotly_chart(fig, use_container_width=True)
+                
+                st.info("**Insight:** Magic Quadrants show highest utilisation (90%), while conferences are underutilised (48%). Focus budget on high-utilisation services.")
         
-        if st.button("Send", key="send_btn") and user_input:
-            st.session_state.last_response = f"Based on your question about '{user_input}', I can analyse the data patterns. The key insight is that your usage shows extreme concentration with Ace Tan driving 28% of total activity, suggesting either exceptional value extraction or potential account sharing that needs investigation."
-        
-        # Display response
-        if hasattr(st.session_state, 'last_response'):
-            st.markdown("**AI Assistant:**")
-            st.info(st.session_state.last_response)
-
-# Basic Optimizer Function
-def render_optimizer():
-    st.header("⚙️ Decision Optimizer")
-    
-    st.subheader("Scenario Planning Tool")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        budget_constraint = st.selectbox(
-            "Budget Constraint",
-            ["Current Trajectory ($3.9M → $7.02M)", "Budget Cap at $3.5M (67% usage cut)", "Moderate Control ($5M budget)"],
-            key="budget_select"
-        )
-        
-        seat_strategy = st.selectbox(
-            "User Allocation Strategy",
-            ["Maintain Current (38 users)", "Remove Low Users (15 users)", "Premium Only (8 high-value users)"],
-            key="seat_select"
-        )
-        
-        contract_term = st.selectbox("Contract Term", ["1 Year", "2 Years", "3 Years"], key="term_select")
-    
-    with col2:
-        st.subheader("Scenario Analysis Results")
-        
-        if "Premium Only" in seat_strategy:
-            st.markdown("""
-            <div class="alert-success">
-                <strong>Recommended:</strong> Premium users only<br>
-                <strong>Savings:</strong> $2.2M annually<br>
-                <strong>Risk Level:</strong> Low
-            </div>
-            """, unsafe_allow_html=True)
-        elif "Budget Cap" in budget_constraint:
-            st.markdown("""
-            <div class="alert-warning">
-                <strong>Strategy:</strong> Implement strict usage controls<br>
-                <strong>Cost:</strong> $3.5M (within budget)<br>
-                <strong>Risk Level:</strong> Moderate
-            </div>
-            """, unsafe_allow_html=True)
         else:
-            st.markdown("""
-            <div class="alert-danger">
-                <strong>Strategy:</strong> Current trajectory unsustainable<br>
-                <strong>Cost:</strong> $7.02M projected<br>
-                <strong>Risk Level:</strong> Critical
-            </div>
-            """, unsafe_allow_html=True)
-
-# Basic Reports Function
-def render_reports():
-    st.header("📄 Report Generator")
+            st.info("👆 Click any button above to see interactive charts and detailed analysis")
     
-    # Report Configuration
-    report_type = st.selectbox(
-        "Report Type",
-        ["TAC 'B' Approval Report", "Contract Renewal Analysis", "Provider Comparison Study"],
-        key="report_type_select"
-    )
+    # Chat input for custom queries
+    st.markdown("---")
+    st.subheader("💬 Ask Custom Questions")
     
-    # Report sections
-    st.subheader("Include Sections")
-    sections = st.multiselect(
-        "Select sections to include:",
-        ["Executive Summary", "Usage Analysis", "Cost-Benefit Analysis", "Risk Assessment", 
-         "Recommendations", "Detailed Metrics", "Survey Results", "Benchmarking"],
-        default=["Executive Summary", "Usage Analysis", "Cost-Benefit Analysis", "Recommendations"],
-        key="sections_select"
-    )
+    user_question = st.text_input("Ask about specific metrics, trends, or comparisons...", 
+                                 placeholder="e.g., 'Show me cost per user by department' or 'Compare Q1 vs Q4 usage'",
+                                 key="insights_chat")
     
-    # Generate Report Button
-    if st.button("Generate Report", key="generate_btn"):
-        st.subheader("Report Preview")
+    if st.button("🔍 Analyse", key="custom_analysis") and user_question:
+        st.markdown("**Custom Analysis Results:**")
         
-        st.markdown(f"""
-        ## {report_type}
+        # Simple keyword-based chart generation
+        if "cost per user" in user_question.lower():
+            cost_per_user_data = pd.DataFrame({
+                'Department': ['CISO Office', 'IT Leadership', 'Strategy', 'SNDGO', 'GTP'],
+                'Cost_Per_User': [195000, 48750, 65000, 40000, 12917],
+                'Users': [1, 6, 3, 5, 24]
+            })
+            
+            fig = px.bar(cost_per_user_data, x='Department', y='Cost_Per_User',
+                       title='Cost Per User by Department')
+            st.plotly_chart(fig, use_container_width=True)
+            st.info(f"Analysis for: '{user_question}' - CISO Office has highest cost per user at $195K, while GTP has lowest at $12.9K per user.")
         
-        ### Executive Summary
-        Based on comprehensive analysis of usage data, user feedback, and market comparisons, 
-        this report recommends **emergency budget controls** for the Gartner research services contract.
+        elif "quarterly" in user_question.lower() or "q1" in user_question.lower():
+            quarterly_data = pd.DataFrame({
+                'Quarter': ['Q3 2023', 'Q4 2023', 'Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024', 'Q1 2025'],
+                'Usage': [850, 920, 1150, 980, 890, 940, 1080],
+                'Cost': [450000, 520000, 680000, 590000, 520000, 580000, 650000]
+            })
+            
+            fig = px.line(quarterly_data, x='Quarter', y=['Usage', 'Cost'],
+                        title='Quarterly Usage vs Cost Trends')
+            st.plotly_chart(fig, use_container_width=True)
+            st.info(f"Analysis for: '{user_question}' - Q1 periods show highest usage due to budget planning cycles.")
         
-        ### Key Findings
-        - **Budget Crisis:** $3.9M spent vs $1.95M expected (100% overrun)
-        - **Usage Concentration:** Single user (Ace Tan) consuming 28% of contract value
-        - **User Satisfaction:** 4.1/5 average rating with 76% finding service useful
-        - **Cost Efficiency:** $632 per download (significantly above benchmark)
-        
-        ### Critical Issues
-        - **Unsustainable Spending:** Current trajectory leads to $7.02M total cost
-        - **Extreme Outlier:** One user driving nearly 30% of total usage
-        - **Service Imbalance:** GTP users showing low utilisation (77 interactions/user)
-        
-        ### Recommendation
-        """)
-        
-        st.markdown("""
-        <div class="alert-danger">
-            <strong>IMMEDIATE ACTION REQUIRED:</strong><br>
-            • Implement emergency spending caps within 30 days<br>
-            • Investigate Ace Tan's usage pattern for business justification<br>
-            • Restructure to premium user model (8 high-value users)<br>
-            • Projected savings: $2.2M annually vs current trajectory
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Export buttons
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.button("📄 Export to PDF", key="pdf_btn")
-        with col2:
-            st.button("📊 Export to Excel", key="excel_btn")
-        with col3:
-            st.button("✅ Submit for Approval", key="submit_btn")
-
-# Navigation using tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📊 Overview Dashboard", 
-    "💡 Insights Engine", 
-    "🤖 AI Discovery Bot", 
-    "⚙️ Decision Optimiser", 
-    "📄 Report Generator"
-])
-
-with tab1:
-    render_overview()
-
-with tab2:
-    render_insights()
-
-with tab3:
-    render_ai_bot()
-
-with tab4:
-    render_optimizer()
-
-with tab5:
-    render_reports()
+        else:
+            # Default response with a general chart
+            st.info(f"Analysing: '{user_question}' - Based on current data patterns, I recommend focusing on the ROI analysis above. For specific metrics, try keywords like 'cost per user', 'quarterly trends', or 'department comparison'.")
